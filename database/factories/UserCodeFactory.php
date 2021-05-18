@@ -3,16 +3,17 @@
 namespace Database\Factories;
 
 use App\Models\Code;
+use App\Models\UserCode;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CodeFactory extends Factory
+class UserCodeFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Code::class;
+    protected $model = UserCode::class;
 
     /**
      * Define the model's default state.
@@ -22,8 +23,8 @@ class CodeFactory extends Factory
     public function definition()
     {
         return [
-            'code' => $this->faker->word(),
-            'quantity' => random_int(5, 100),
+            'code_id' => Code::factory(),
+            'phone' => '0910123' . random_int(1000, 9999)
         ];
     }
 }
