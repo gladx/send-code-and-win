@@ -19,10 +19,8 @@ class UserCodeController extends Controller
         }
 
         $redis = Redis::connection();
-
-        $redis->zadd('code:' . $request->code, 3,  $request->phone);
-
-        $redis->zrange('code:' . $request->code, 0, 2);
+        
+        $redis->zadd('code:' . $request->code, $request->server('REQUEST_TIME_FLOAT'),  $request->phone);
 
         return response()->json(['status' => 'ok']);
     }
