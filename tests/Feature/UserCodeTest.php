@@ -22,6 +22,9 @@ class UserCodeTest extends TestCase
 
         $response->assertStatus(200);
 
+        // Select winner
+        $this->artisan('update-wins')->assertExitCode(0);
+
         $this->assertDatabaseHas('user_codes', ['phone' => $userCode->phone]);
     }
 
@@ -30,8 +33,6 @@ class UserCodeTest extends TestCase
      */
     public function guest_user_checks_win_status()
     {
-        $this->withoutExceptionHandling();
-        
         // create code
         $registerCode = Code::factory()->raw();
         $this->post('/api/code', $registerCode)->assertStatus(200);
@@ -39,6 +40,9 @@ class UserCodeTest extends TestCase
         // User send code 
         $phone1 = '1234';
         $this->post('/api/user/code', ['code' => $registerCode["code"], 'phone' => $phone1])->assertStatus(200);
+
+        // Select winner
+        $this->artisan('update-wins')->assertExitCode(0);
 
         // check user win
         $code = $registerCode["code"];
@@ -53,8 +57,6 @@ class UserCodeTest extends TestCase
      */
     public function just_first_k_users_win()
     {
-        $this->withoutExceptionHandling();
-
         // create code
         $registerCode = Code::factory()->raw(['quantity' => 2]);
         $this->post('/api/code', $registerCode)->assertStatus(200);
@@ -67,6 +69,9 @@ class UserCodeTest extends TestCase
         $phone3 = '1236';
         $this->post('/api/user/code', ['code' => $registerCode["code"], 'phone' => $phone3])->assertStatus(200);
 
+        // Select winner
+        $this->artisan('update-wins')->assertExitCode(0);
+        
         // check user win
         $code = $registerCode["code"];
         $this->get("/api/user/code/{$code}/{$phone1}")->assertStatus(200);
