@@ -6,6 +6,7 @@ use App\Models\Code;
 use App\Models\UserCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redis;
 
 class UserCodeController extends Controller
 {
@@ -17,13 +18,11 @@ class UserCodeController extends Controller
            return response()->json($validator->errors(), 422);
         }
 
-        $code = Code::whereCode($request->code)->first();
+        $redis = Redis::connection();
 
-        // dump(UserCode::whereCodeId($code->id)->count(), ($code->quantity - 1));
-        if(UserCode::whereCodeId($code->id)->count() <= ($code->quantity - 1)) {
-            // dump($request->phone);
-            UserCode::create(['code_id' => $code->id, 'phone' => $request->phone]);
-        }
+        $redis->zadd('code:' . $request->code, 3,  $request->phone);
+
+        $redis->zrange('code:' . $request->code, 0, 2);
 
         return response()->json(['status' => 'ok']);
     }
