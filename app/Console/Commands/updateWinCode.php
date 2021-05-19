@@ -45,7 +45,9 @@ class updateWinCode extends Command
 
         foreach($codes as $code) {
             $winsPhones = $redis->zrange('code:' . $code->code, 0, $code->quantity - 1);
+            $this->line($code->code);
             foreach($winsPhones as $phone) {
+                $this->info("phone:" . $phone);
                 UserCode::updateOrCreate(['code_id' => $code->id, 'phone' => $phone], ['code_id' => $code->id, 'phone' => $phone]);
             }
         }
