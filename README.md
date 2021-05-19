@@ -18,3 +18,8 @@ GET /user/code/{code}/{phone}
 ```
     php artisan update-wins
 ```
+
+## Run tests
+```
+    php artisan test
+```
